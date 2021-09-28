@@ -3,7 +3,42 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSave, faPlus, faCut, faCopy, faArrowUp, faArrowDown, faPlay, faStop, faRedoAlt, faForward } from '@fortawesome/free-solid-svg-icons'
 import RenameModal from './RenameModal'
 import './Menu.css'
-export default function Menu(){
+export default function Menu({ setCurrentId, currentId, setLastId, lastId, newElement, codeArea, setCodeArea }){
+    const addNewCodeInputLine=async(operation)=>{
+        //alert(currentId)
+        var data=codeArea;
+         // var data=Object.values(document.getElementsByClassName('code-container')[0].children);
+        //data.splice(0,1);
+        //  console.log(data)
+        /*var element=document.getElementById(currentId);
+        console.log(element)
+        console.log(element.key);*/
+        //console.log(currentId)
+        var index=-1;
+        data.forEach((array_element,i) => {
+            //console.log(array_element)
+            if(parseInt(array_element.key)===currentId){
+                index=i;
+            }
+        });
+      //  alert(index+', '+lastId)
+        if(operation==='cut' && data.length>1 && index>-1){
+            document.getElementById(currentId).style.display='none';
+            data.splice(index,1);
+        }
+        else if(operation==='add'){
+            if(index===-1)
+                data=[...data,newElement(lastId+1)]
+            else
+                data.splice(index+1,0,newElement(lastId+1));
+            await setLastId(lastId+1);
+        }
+        setCurrentId(-1);
+        
+        //console.log(data)
+        setCodeArea(data)
+        
+    }
     const openRenameModal=()=>{
         var projectName=document.getElementById('project-name').innerHTML;
         document.getElementById('rename').value=projectName;
@@ -27,8 +62,8 @@ export default function Menu(){
             </div>
             <div className="tool-bar">
                 <div className="menu-bar-icons"><FontAwesomeIcon icon={faSave} /></div>
-                <div className="menu-bar-icons"><FontAwesomeIcon icon={faPlus} /></div>
-                <div className="menu-bar-icons"><FontAwesomeIcon icon={faCut} /></div>
+                <div className="menu-bar-icons" onClick={addNewCodeInputLine.bind(this,'add')}><FontAwesomeIcon icon={faPlus} /></div>
+                <div className="menu-bar-icons" onClick={addNewCodeInputLine.bind(this,'cut')}><FontAwesomeIcon icon={faCut} /></div>
                 <div className="menu-bar-icons"><FontAwesomeIcon icon={faCopy} /></div>
                 <div className="menu-bar-icons"><FontAwesomeIcon icon={faArrowUp} /></div>
                 <div className="menu-bar-icons"><FontAwesomeIcon icon={faArrowDown} /></div>
