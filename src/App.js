@@ -15,7 +15,7 @@ function App() {
         <div className="code-input">
             <div className="play-icon"><FontAwesomeIcon icon={faPlay} /></div>
             <div className="code-line-container">
-                <textarea onKeyDown={updateRowNo} onFocus={async()=>{await setCurrentId(1);console.log(1);}} className="code" rows={1} autoCorrect="off" autoCapitalize="none" spellCheck="false" tabIndex="0" wrap="off"></textarea>
+                <textarea id={'input_1'} onKeyDown={updateRowNo} onFocus={async()=>{await setCurrentId(1);/*console.log(1);*/}} className="code" rows={1} autoCorrect="off" autoCapitalize="none" spellCheck="false" tabIndex="0" wrap="off"></textarea>
             </div>
         </div>
         <div className="code-output"></div>
@@ -30,13 +30,13 @@ function App() {
        else if(event.charCode===13 || event.keyCode===13)
            event.target.rows=event.target.rows+1;
    }
-   const newElement=(id)=>{
+   const newElement=(id,code="")=>{
      return(
       <div className="code-line" id={id} key={id}>
         <div className="code-input">
             <div className="play-icon"><FontAwesomeIcon icon={faPlay} /></div>
             <div className="code-line-container">
-                <textarea onKeyDown={updateRowNo} onFocus={async()=>{await setCurrentId(id);console.log(id);}} className="code" rows={1} autoCorrect="off" autoCapitalize="none" spellCheck="false" tabIndex="0" wrap="off"></textarea>
+                <textarea id={"input_"+id} defaultValue={code} onKeyDown={updateRowNo} onFocus={async()=>{await setCurrentId(id);/*console.log(id);*/}} className="code" rows={1} autoCorrect="off" autoCapitalize="none" spellCheck="false" tabIndex="0" wrap="off"></textarea>
             </div>
         </div>
         <div className="code-output"></div>

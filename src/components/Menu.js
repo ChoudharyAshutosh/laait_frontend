@@ -25,6 +25,8 @@ export default function Menu({ setCurrentId, currentId, setLastId, lastId, newEl
         if(operation==='cut' && data.length>1 && index>-1){
             document.getElementById(currentId).style.display='none';
             data.splice(index,1);
+            setCurrentId(-1);
+            setCodeArea(data);
         }
         else if(operation==='add'){
             if(index===-1)
@@ -32,11 +34,37 @@ export default function Menu({ setCurrentId, currentId, setLastId, lastId, newEl
             else
                 data.splice(index+1,0,newElement(lastId+1));
             await setLastId(lastId+1);
+            setCurrentId(-1);
+            setCodeArea(data);
         }
-        setCurrentId(-1);
+        else if(operation==='move_up' && data.length>0){
+            let elementToFocus=null;
+            if(index>0)
+                elementToFocus=data[index-1];
+            else
+                elementToFocus=data[index];
+            document.getElementById('input_'+elementToFocus.props.id).focus();
+            setCurrentId(elementToFocus.props.id);
+        }
+        else if(operation==='move_down' && data.length>0 && index>-1){
+            let elementToFocus=null;
+            if(index<data.length-1) 
+                elementToFocus=data[index+1];
+            else
+                elementToFocus=data[index];
+            document.getElementById('input_'+elementToFocus.props.id).focus();
+            setCurrentId(elementToFocus.props.id);
+        }
+        else if(operation==='copy' && index>-1){
+            var code=document.getElementById('input_'+currentId).value;
+            data.splice(index+1,0,newElement(lastId+1,code));
+            await setLastId(lastId+1);
+            setCurrentId(-1);
+            setCodeArea(data);
+        }
         
         //console.log(data)
-        setCodeArea(data)
+        
         
     }
     const openRenameModal=()=>{
@@ -64,9 +92,9 @@ export default function Menu({ setCurrentId, currentId, setLastId, lastId, newEl
                 <div className="menu-bar-icons"><FontAwesomeIcon icon={faSave} /></div>
                 <div className="menu-bar-icons" onClick={addNewCodeInputLine.bind(this,'add')}><FontAwesomeIcon icon={faPlus} /></div>
                 <div className="menu-bar-icons" onClick={addNewCodeInputLine.bind(this,'cut')}><FontAwesomeIcon icon={faCut} /></div>
-                <div className="menu-bar-icons"><FontAwesomeIcon icon={faCopy} /></div>
-                <div className="menu-bar-icons"><FontAwesomeIcon icon={faArrowUp} /></div>
-                <div className="menu-bar-icons"><FontAwesomeIcon icon={faArrowDown} /></div>
+                <div className="menu-bar-icons" onClick={addNewCodeInputLine.bind(this,'copy')}><FontAwesomeIcon icon={faCopy} /></div>
+                <div className="menu-bar-icons" onClick={addNewCodeInputLine.bind(this,'move_up')}><FontAwesomeIcon icon={faArrowUp} /></div>
+                <div className="menu-bar-icons" onClick={addNewCodeInputLine.bind(this,'move_down')}><FontAwesomeIcon icon={faArrowDown} /></div>
                 <div className="menu-bar-icons"><FontAwesomeIcon icon={faPlay} /> &nbsp;Run</div>
                 <div className="menu-bar-icons"><FontAwesomeIcon icon={faStop} /></div>
                 <div className="menu-bar-icons"><FontAwesomeIcon icon={faRedoAlt} /></div>
