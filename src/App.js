@@ -3,17 +3,19 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlay } from '@fortawesome/free-solid-svg-icons';
 import Menu from './components/Menu';
 import CodeArea from './CodeArea';
+import ChatArea from './ChatArea';
+import OpenChat from './components/OpenChat';
 import './App.css';
 
 function App() {
   const [currentId,setCurrentId]=useState(1);
   const [lastId, setLastId]=useState(1);
-  const [codeArea, setCodeArea]=useState([''])
+  const [codeArea, setCodeArea]=useState(['']);
   useEffect(()=>{
     setCodeArea([(
       <div className="code-line" id={1} key={1}>
         <div className="code-input">
-            <div className="play-icon"><FontAwesomeIcon icon={faPlay} /></div>
+            <div className="play-icon"><FontAwesomeIcon icon={faPlay} color={'#FE9B00'}/></div>
             <div className="code-line-container">
                 <textarea id={'input_1'} onKeyDown={updateRowNo} onFocus={async()=>{await setCurrentId(1);/*console.log(1);*/}} className="code" rows={1} autoCorrect="off" autoCapitalize="none" spellCheck="false" tabIndex="0" wrap="off"></textarea>
             </div>
@@ -34,7 +36,7 @@ function App() {
      return(
       <div className="code-line" id={id} key={id}>
         <div className="code-input">
-            <div className="play-icon"><FontAwesomeIcon icon={faPlay} /></div>
+            <div className="play-icon"><FontAwesomeIcon icon={faPlay} color={'#FE9B00'}  /></div>
             <div className="code-line-container">
                 <textarea id={"input_"+id} defaultValue={code} onKeyDown={updateRowNo} onFocus={async()=>{await setCurrentId(id);/*console.log(id);*/}} className="code" rows={1} autoCorrect="off" autoCapitalize="none" spellCheck="false" tabIndex="0" wrap="off"></textarea>
             </div>
@@ -46,7 +48,11 @@ function App() {
   return (
     <div className="App">
       <Menu setCurrentId={setCurrentId} currentId={currentId} setLastId={setLastId} lastId={lastId} newElement={newElement} setCodeArea={setCodeArea} codeArea={codeArea}/>
-      <CodeArea setCurrentId={setCurrentId} currentId={currentId} setLastId={setLastId} lastId={lastId} updateRowNo={updateRowNo} codeArea={codeArea}/>
+      <div className={"page_container"}>
+        <CodeArea setCurrentId={setCurrentId} currentId={currentId} setLastId={setLastId} lastId={lastId} updateRowNo={updateRowNo} codeArea={codeArea}/>
+        <ChatArea />
+        <OpenChat/>
+      </div>
     </div>
   );
 }

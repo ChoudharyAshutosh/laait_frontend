@@ -1,0 +1,7 @@
+#open_chat_button{
+  z-index: 10;
+  position: absolute;
+  bottom: 20px;
+  right:25px;
+  cursor: pointer;
+}

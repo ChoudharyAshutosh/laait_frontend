@@ -1,0 +1,8 @@
+#chat_area{
+  height: calc( 100vh - 53px );
+  background-color: red;
+  width: 25%;
+}
+.hide{
+  display: none;
+}
