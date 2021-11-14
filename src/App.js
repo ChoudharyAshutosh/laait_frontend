@@ -1,10 +1,13 @@
 import React,{ useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlay } from '@fortawesome/free-solid-svg-icons';
+//import { Connector, useMqttState } from 'mqtt-react-hooks';
 import Menu from './components/Menu';
 import CodeArea from './CodeArea';
 import ChatArea from './ChatArea';
 import OpenChat from './components/OpenChat';
+//import Connect from './components/Connection'
+import mqtt from 'mqtt'
 import './App.css';
 
 function App() {
@@ -47,6 +50,7 @@ function App() {
    }
   return (
     <div className="App">
+      {/*<Connect/>*/}
       <Menu setCurrentId={setCurrentId} currentId={currentId} setLastId={setLastId} lastId={lastId} newElement={newElement} setCodeArea={setCodeArea} codeArea={codeArea}/>
       <div className={"page_container"}>
         <CodeArea setCurrentId={setCurrentId} currentId={currentId} setLastId={setLastId} lastId={lastId} updateRowNo={updateRowNo} codeArea={codeArea}/>
