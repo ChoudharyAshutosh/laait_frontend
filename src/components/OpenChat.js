@@ -3,8 +3,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faComments } from '@fortawesome/free-solid-svg-icons';
 import mqtt from 'mqtt';
 import './OpenChat.css';
-export default function OpenChat(){
+export default function OpenChat({ setChatViewStatus, chatClient, setChatClient, setNewMsgReceived }){
   const showChat=()=>{
+    if(!chatClient){
     const url = `ws://broker.emqx.io:8083/mqtt`;
     const options = {
       keepalive: 30,
@@ -21,32 +22,38 @@ export default function OpenChat(){
       },
       rejectUnauthorized: false
     };
-    var client=mqtt.connect(url, options)
-    if (client) {
-      client.on('connect', () => {
+    var chatClient=mqtt.connect(url, options)
+    if (chatClient) {
+      chatClient.on('connect', () => {
         console.log('Connected');
       });
-      client.on('error', (err) => {
+      chatClient.on('error', (err) => {
         console.error('Connection error: ', err);
-        client.end();
+        chatClient.end();
       });
-      client.on('reconnect', () => {
+      chatClient.on('reconnect', () => {
         console.log('Reconnecting');
       });
-      client.subscribe('test', 0, (error) => {
+      chatClient.subscribe('test', 0, (error) => {
         if (error) {
           console.log('Subscribe to topics error', error)
-          return
+          return;
         }
       })
-      client.on('message', (topic, message) => {
+      chatClient.on('message', (topic, message) => {
         const payload = { topic, message: message.toString() };
-        console.log(payload);
+        setNewMsgReceived(payload);
       });
     }
-    document.querySelector('#chat_area').classList.toggle('hide');
-    document.querySelector('#open_chat_button').classList.toggle('hide');
-    document.querySelector('#close_chat_button').classList.toggle('hide');
+    setChatClient(chatClient)
+    }
+    setChatViewStatus(true);
+    //document.querySelector('#chat_area').classList.toggle('hide');
+    //document.querySelector('#open_chat_button').classList.toggle('hide');
+    //document.querySelector('#close_chat_button').classList.toggle('hide');
+  }
+  const update=(payload)=>{
+
   }
   return(
     <div id="open_chat_button" onClick={showChat}>

@@ -1,19 +1,30 @@
-import React,{ useState, useEffect } from 'react';
+import React,{ useState, useEffect, useRef } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlay } from '@fortawesome/free-solid-svg-icons';
-//import { Connector, useMqttState } from 'mqtt-react-hooks';
 import Menu from './components/Menu';
 import CodeArea from './CodeArea';
 import ChatArea from './ChatArea';
 import OpenChat from './components/OpenChat';
-//import Connect from './components/Connection'
-import mqtt from 'mqtt'
 import './App.css';
 
 function App() {
   const [currentId,setCurrentId]=useState(1);
   const [lastId, setLastId]=useState(1);
   const [codeArea, setCodeArea]=useState(['']);
+  const [chat, updateChat]=useState([]);
+  const [chatViewStatus,setChatViewStatus]=useState(false);
+  const [chatClient, setChatClient]=useState(null);
+  const [newMsgReceived, setNewMsgReceived]=useState(null);
+  const messagesEndRef = useRef(null);
+  useEffect(()=>{
+    if(messagesEndRef.current)
+      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+  }, [chat]);
+  useEffect(()=>{
+    if(newMsgReceived){
+      updateChat([...chat,{sender:newMsgReceived.topic,message:newMsgReceived.message}]);
+    }
+  },[newMsgReceived])
   useEffect(()=>{
     setCodeArea([(
       <div className="code-line" id={1} key={1}>
@@ -27,6 +38,15 @@ function App() {
       </div>
     )])
   },[])
+  const publish=(topic,message,qos)=>{
+    if(chatClient){
+      chatClient.publish('test', message, 0, error => {
+        if (error) {
+          console.log('Publish error: ', error);
+        }
+      });
+    }
+  }
   const updateRowNo=(event)=>{
     //   console.log(event.target.value.charCodeAt(event.target.value.length-1))
     //   console.log(event.key,event.charCode,event.keyCode)
@@ -54,8 +74,17 @@ function App() {
       <Menu setCurrentId={setCurrentId} currentId={currentId} setLastId={setLastId} lastId={lastId} newElement={newElement} setCodeArea={setCodeArea} codeArea={codeArea}/>
       <div className={"page_container"}>
         <CodeArea setCurrentId={setCurrentId} currentId={currentId} setLastId={setLastId} lastId={lastId} updateRowNo={updateRowNo} codeArea={codeArea}/>
-        <ChatArea />
-        <OpenChat/>
+        {
+          chatViewStatus && (
+            <ChatArea chat={chat} updateChat={updateChat} setChatViewStatus={setChatViewStatus} messagesEndRef={messagesEndRef} chatClient={chatClient} publish={publish}/>
+          )
+        }
+        {
+          !chatViewStatus && (
+            <OpenChat setChatViewStatus={setChatViewStatus} chatClient={chatClient} setChatClient={setChatClient} setNewMsgReceived={setNewMsgReceived}/>
+          )
+        }
+
       </div>
     </div>
   );
