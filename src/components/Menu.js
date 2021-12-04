@@ -95,7 +95,7 @@ export default function Menu({ setCurrentId, currentId, setLastId, lastId, newEl
                 <div className="menu-bar-icons"><FontAwesomeIcon icon={faRedoAlt}  color={'#6060eb'}/></div>
                 <div className="menu-bar-icons"><FontAwesomeIcon icon={faForward}  color={'#00ff80'}/></div>
                 <div className="menu-name">
-                    <div className="project-name" id="project-name" onClick={openRenameModal}>Ashutosh Choudhary</div>
+                    <div className="project-name" id="project-name" onClick={openRenameModal}>Enter name</div>
                 </div>
             </div>
             {/*<div className="tool-bar">

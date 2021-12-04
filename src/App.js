@@ -1,7 +1,9 @@
-import React,{ useState, useEffect, useRef } from 'react';
+import React,{ useState, useEffect, useRef, Fragment } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlay } from '@fortawesome/free-solid-svg-icons';
+import mqtt from 'mqtt';
 import Menu from './components/Menu';
+import Login from './components/Login.js'
 import CodeArea from './CodeArea';
 import ChatArea from './ChatArea';
 import OpenChat from './components/OpenChat';
@@ -9,6 +11,7 @@ import './App.css';
 
 function App() {
   const [currentId,setCurrentId]=useState(1);
+  const [loggedUser,setLoggedUser]=useState(null);
   const [lastId, setLastId]=useState(1);
   const [codeArea, setCodeArea]=useState(['']);
   const [chat, updateChat]=useState([]);
@@ -24,7 +27,8 @@ function App() {
     if(newMsgReceived){
       updateChat([...chat,{sender:newMsgReceived.topic,message:newMsgReceived.message}]);
     }
-  },[newMsgReceived])
+  },[newMsgReceived]);
+
   useEffect(()=>{
     setCodeArea([(
       <div className="code-line" id={1} key={1}>
@@ -37,7 +41,13 @@ function App() {
         <div className="code-output"></div>
       </div>
     )])
-  },[])
+  },[]);
+
+  const validateEmail=(email)=>{
+   var emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+   return emailPattern.test(email);
+ }
+
   const publish=(topic,message,qos)=>{
     if(chatClient){
       chatClient.publish('test', message, 0, error => {
@@ -68,24 +78,86 @@ function App() {
       </div>
      )
    }
+   const connectToChat=(id)=>{
+     if(!chatClient){
+     const url = `ws://broker.emqx.io:8083/mqtt`;
+     const options = {
+       keepalive: 30,
+       protocolId: 'MQTT',
+       protocolVersion: 4,
+       clean: true,
+       reconnectPeriod: 1000,
+       connectTimeout: 30 * 1000,
+       will: {
+         topic: 'WillMsg',
+         payload: 'Connection Closed abnormally..!',
+         qos: 0,
+         retain: false
+       },
+       rejectUnauthorized: false
+     };
+     var chatClient=mqtt.connect(url, options)
+     if (chatClient) {
+       chatClient.on('connect', () => {
+         console.log('Connected');
+       });
+       chatClient.on('error', (err) => {
+         console.error('Connection error: ', err);
+         chatClient.end();
+       });
+       chatClient.on('reconnect', () => {
+         console.log('Reconnecting');
+       });
+       chatClient.subscribe('test', 0, (error) => {
+         if (error) {
+           console.log('Subscribe to topics error', error)
+           return;
+         }
+       });
+       if(id){
+         console.log(id)
+         chatClient.subscribe(id+'-request', 0, (error) => {
+           if (error) {
+             console.log('Subscribe to topics error', error)
+             return;
+           }
+         });
+       }
+       chatClient.on('message', (topic, message) => {
+         const payload = { topic, message: message.toString() };
+         setNewMsgReceived(payload);
+       });
+     }
+     setChatClient(chatClient)
+     }
+   }
   return (
     <div className="App">
-      {/*<Connect/>*/}
-      <Menu setCurrentId={setCurrentId} currentId={currentId} setLastId={setLastId} lastId={lastId} newElement={newElement} setCodeArea={setCodeArea} codeArea={codeArea}/>
-      <div className={"page_container"}>
-        <CodeArea setCurrentId={setCurrentId} currentId={currentId} setLastId={setLastId} lastId={lastId} updateRowNo={updateRowNo} codeArea={codeArea}/>
-        {
-          chatViewStatus && (
-            <ChatArea chat={chat} updateChat={updateChat} setChatViewStatus={setChatViewStatus} messagesEndRef={messagesEndRef} chatClient={chatClient} publish={publish}/>
+      {
+        !loggedUser && (
+          <Login setLoggedUser={setLoggedUser} validateEmail={validateEmail} connectToChat={connectToChat.bind(this)}/>
+        )
+      }
+      {
+        loggedUser && (
+          <Fragment>
+            <Menu setCurrentId={setCurrentId} currentId={currentId} setLastId={setLastId} lastId={lastId} newElement={newElement} setCodeArea={setCodeArea} codeArea={codeArea}/>
+            <div className={"page_container"}>
+              <CodeArea setCurrentId={setCurrentId} currentId={currentId} setLastId={setLastId} lastId={lastId} updateRowNo={updateRowNo} codeArea={codeArea}/>
+              {
+                chatViewStatus && (
+                  <ChatArea chat={chat} updateChat={updateChat} setChatViewStatus={setChatViewStatus} messagesEndRef={messagesEndRef} chatClient={chatClient} publish={publish}/>
+                )
+              }
+              {
+                !chatViewStatus && loggedUser && (
+                  <OpenChat setChatViewStatus={setChatViewStatus} chatClient={chatClient} setChatClient={setChatClient} setNewMsgReceived={setNewMsgReceived}/>
+                )
+              }
+            </div>
+          </Fragment>
           )
         }
-        {
-          !chatViewStatus && (
-            <OpenChat setChatViewStatus={setChatViewStatus} chatClient={chatClient} setChatClient={setChatClient} setNewMsgReceived={setNewMsgReceived}/>
-          )
-        }
-
-      </div>
     </div>
   );
 }
