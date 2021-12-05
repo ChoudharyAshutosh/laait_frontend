@@ -1,9 +1,18 @@
-import React, { useState } from 'react'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import React, { useState } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { GoogleLogout } from 'react-google-login';
 import { faSave, faPlus, faCut, faCopy, faArrowUp, faArrowDown, faPlay, faStop, faRedoAlt, faForward } from '@fortawesome/free-solid-svg-icons'
 import RenameModal from './RenameModal'
 import './Menu.css'
-export default function Menu({ setCurrentId, currentId, setLastId, lastId, newElement, codeArea, setCodeArea }){
+export default function Menu({ setLoggedUser, chatClient, setCurrentId, currentId, setLastId, lastId, newElement, codeArea, setCodeArea }){
+    const logoutSuccessResponse=(response)=>{
+      console.log(response);
+      chatClient.end();
+      setLoggedUser(null);
+    }
+    const logoutFailureResponse=(response)=>{
+      console.log(response);
+    }
     const addNewCodeInputLine=async(operation)=>{
         //alert(currentId)
         var data=codeArea;
@@ -96,6 +105,15 @@ export default function Menu({ setCurrentId, currentId, setLastId, lastId, newEl
                 <div className="menu-bar-icons"><FontAwesomeIcon icon={faForward}  color={'#00ff80'}/></div>
                 <div className="menu-name">
                     <div className="project-name" id="project-name" onClick={openRenameModal}>Enter name</div>
+                    <GoogleLogout
+                      render={renderProps => (
+                        <div className={'google-logout'} onClick={renderProps.onClick} disabled={renderProps.disabled}>Logout</div>
+                      )}
+                      clientId="763812005023-ivcng78nucojoifa5eesc22hp98aib4n.apps.googleusercontent.com"
+                      buttonText="Logout"
+                      onLogoutSuccess={logoutSuccessResponse}
+                      onLogoutFailure={logoutFailureResponse}/>
+
                 </div>
             </div>
             {/*<div className="tool-bar">

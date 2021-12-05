@@ -50,9 +50,19 @@ function App() {
 
   const publish=(topic,message,qos)=>{
     if(chatClient){
-      chatClient.publish('test', message, 0, error => {
+      chatClient.publish(topic, message, 0, error => {
         if (error) {
           console.log('Publish error: ', error);
+        }
+      });
+    }
+  }
+  const subscribe=(topic,qos)=>{
+    if(chatClient){
+      chatClient.subscribe(topic, qos, (error) => {
+        if (error) {
+          console.log('Subscribe to topics error', error)
+          return;
         }
       });
     }
@@ -122,7 +132,7 @@ function App() {
              return;
            }
          });
-       }
+      }
        chatClient.on('message', (topic, message) => {
          const payload = { topic, message: message.toString() };
          setNewMsgReceived(payload);
@@ -141,12 +151,12 @@ function App() {
       {
         loggedUser && (
           <Fragment>
-            <Menu setCurrentId={setCurrentId} currentId={currentId} setLastId={setLastId} lastId={lastId} newElement={newElement} setCodeArea={setCodeArea} codeArea={codeArea}/>
+            <Menu setLoggedUser={setLoggedUser} chatClient={chatClient} setCurrentId={setCurrentId} currentId={currentId} setLastId={setLastId} lastId={lastId} newElement={newElement} setCodeArea={setCodeArea} codeArea={codeArea}/>
             <div className={"page_container"}>
               <CodeArea setCurrentId={setCurrentId} currentId={currentId} setLastId={setLastId} lastId={lastId} updateRowNo={updateRowNo} codeArea={codeArea}/>
               {
                 chatViewStatus && (
-                  <ChatArea chat={chat} updateChat={updateChat} setChatViewStatus={setChatViewStatus} messagesEndRef={messagesEndRef} chatClient={chatClient} publish={publish}/>
+                  <ChatArea subscribe={subscribe} validateEmail={validateEmail} chat={chat} updateChat={updateChat} setChatViewStatus={setChatViewStatus} messagesEndRef={messagesEndRef} chatClient={chatClient} publish={publish}/>
                 )
               }
               {

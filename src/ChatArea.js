@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faWindowClose, faUserPlus, faPaperPlane } from '@fortawesome/free-solid-svg-icons';
 import './ChatArea.css';
-export default function ChatArea({ chat, updateChat, setChatViewStatus, messagesEndRef, chatClient, publish }){
+export default function ChatArea({ subscribe, validateEmail, chat, updateChat, setChatViewStatus, messagesEndRef, chatClient, publish }){
   const closeChat=()=>{
     setChatViewStatus(false);
     //document.querySelector('#chat_area').classList.toggle('hide');
@@ -33,17 +33,32 @@ export default function ChatArea({ chat, updateChat, setChatViewStatus, messages
       })
     }
   }
-  const sendMessage=()=>{
+  const sendMessage=(action)=>{
     var message=document.querySelector('#message_to_send').value;
     document.querySelector('#message_to_send').value='';
     if(!message) return;
-    updateChat([...chat,{sender:'self',message:message}]);
-    publish('topic',message,0);
+    if(action==='send'){
+      updateChat([...chat,{sender:'self',message:message}]);
+      publish('topic',message,0);
+      console.log(action);
+    }
+    else if(action==='invite'){
+      if(validateEmail(message)){
+        publish(message+'-request','Invitation for joining chat',0);
+        subscribe(message+'-response', 0);
+        document.querySelector('#invitation_error').innerHTML="";
+      }
+      else{
+        document.querySelector('#invitation_error').innerHTML="Please enter valid email";
+      }
+      console.log(action);
+    }
     //console.log([...chat,{sender:'self',message:message}])
   }
   const triggerMessage=(event)=>{
+    console.log(event.keyCode)
     if(event.keyCode===13)
-      sendMessage();
+      sendMessage('send');
   }
   return(
     <div id={'chat_area'}>
@@ -67,12 +82,13 @@ export default function ChatArea({ chat, updateChat, setChatViewStatus, messages
             <div ref={messagesEndRef} />
           </div>
         </div>
+        <div className={'invitation_error'} id={"invitation_error"}></div>
         <div className="message_typing_section">
           <input type="text" className="message_input" id="message_to_send" onKeyDown={triggerMessage}/>
-          <button className="invite">
+          <button className="invite" onClick={sendMessage.bind(this,'invite')}>
             <FontAwesomeIcon icon={faUserPlus} color={'red'}/>
           </button>
-          <button className="message_send" onClick={sendMessage}>
+          <button className="message_send" onClick={sendMessage.bind(this,'send')}>
             <FontAwesomeIcon icon={faPaperPlane} color={'blue'}/>
           </button>
         </div>
