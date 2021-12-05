@@ -49,6 +49,9 @@
   cursor: pointer;
   height: 100%;
 }
+.invitation_error{
+  color: yellow;
+}
 .message_input{
   flex: 1;
   min-width: 10%;

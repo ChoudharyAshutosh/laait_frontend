@@ -36,6 +36,31 @@
   border: 0px;
   cursor: pointer;
 }
+.google-login{
+  background-color: white;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  border-radius: 5px;
+  background-color: blue;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  cursor: pointer;
+}
+.google-icon{
+  padding: 10px;
+  background-color: white;
+  border-bottom-left-radius: 5px;
+  border-top-left-radius: 5px;
+  width: 40px;
+  height: 40px;
+}
+.login-text{
+  font-size:larger;
+  color: white;
+  font-weight: bolder;
+  padding: 10px;
+}
 .login_error{
   color: red;
   text-align: center;
