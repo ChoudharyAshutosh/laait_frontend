@@ -4,11 +4,12 @@ import { GoogleLogout } from 'react-google-login';
 import { faSave, faPlus, faCut, faCopy, faArrowUp, faArrowDown, faPlay, faStop, faRedoAlt, faForward } from '@fortawesome/free-solid-svg-icons'
 import RenameModal from './RenameModal'
 import './Menu.css'
-export default function Menu({ setLoggedUser, chatClient, setCurrentId, currentId, setLastId, lastId, newElement, codeArea, setCodeArea }){
+export default function Menu({ updateChat, setLoggedUser, chatClient, setCurrentId, currentId, setLastId, lastId, newElement, codeArea, setCodeArea }){
     const logoutSuccessResponse=(response)=>{
       console.log(response);
       chatClient.end();
       setLoggedUser(null);
+      updateChat([]);
     }
     const logoutFailureResponse=(response)=>{
       console.log(response);
@@ -71,10 +72,6 @@ export default function Menu({ setLoggedUser, chatClient, setCurrentId, currentI
             setCurrentId(-1);
             setCodeArea(data);
         }
-
-        //console.log(data)
-
-
     }
     const openRenameModal=()=>{
         var projectName=document.getElementById('project-name').innerHTML;
