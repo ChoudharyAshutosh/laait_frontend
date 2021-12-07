@@ -7,6 +7,7 @@ import Login from './components/Login.js'
 import CodeArea from './CodeArea';
 import ChatArea from './ChatArea';
 import OpenChat from './components/OpenChat';
+import RequestResponseModal from './components/RequestResponseModal';
 import './App.css';
 
 function App() {
@@ -19,13 +20,15 @@ function App() {
   const [chatClient, setChatClient]=useState(null);
   const [newMsgReceived, setNewMsgReceived]=useState(null);
   const messagesEndRef = useRef(null);
+  const [requestPayload, setRequestPayload] = useState(null);
   useEffect(()=>{
     if(messagesEndRef.current)
       messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
   }, [chat]);
   useEffect(()=>{
     if(newMsgReceived){
-      updateChat([...chat,{sender:newMsgReceived.topic,message:newMsgReceived.message}]);
+      if(JSON.parse(newMsgReceived).sender!==loggedUser)
+       updateChat([...chat,JSON.parse(newMsgReceived)]);
     }
   },[newMsgReceived]);
 
@@ -88,6 +91,18 @@ function App() {
       </div>
      )
    }
+
+   const performAction=(topic,message,id)=>{
+     if(topic.split(':').length===1){
+       if(JSON.parse(message).sender!==id)
+        setNewMsgReceived(message);
+     }
+     else {
+       const payload = { topic, message: JSON.parse(message) };
+       setRequestPayload(payload);
+     }
+  }
+
    const connectToChat=(id)=>{
      if(!chatClient){
      const url = `ws://broker.emqx.io:8083/mqtt`;
@@ -118,7 +133,7 @@ function App() {
        chatClient.on('reconnect', () => {
          console.log('Reconnecting');
        });
-       chatClient.subscribe('test', 0, (error) => {
+       chatClient.subscribe('laait_forum', 0, (error) => {
          if (error) {
            console.log('Subscribe to topics error', error)
            return;
@@ -126,7 +141,13 @@ function App() {
        });
        if(id){
          console.log(id)
-         chatClient.subscribe(id+'-request', 0, (error) => {
+         chatClient.subscribe(id+':request', 0, (error) => {
+           if (error) {
+             console.log('Subscribe to topics error', error)
+             return;
+           }
+         });
+         chatClient.subscribe(id+':response', 0, (error) => {
            if (error) {
              console.log('Subscribe to topics error', error)
              return;
@@ -134,8 +155,8 @@ function App() {
          });
       }
        chatClient.on('message', (topic, message) => {
-         const payload = { topic, message: message.toString() };
-         setNewMsgReceived(payload);
+         performAction(topic, message, id);
+         //setNewMsgReceived(payload.message);
        });
      }
      setChatClient(chatClient)
@@ -148,15 +169,16 @@ function App() {
           <Login setLoggedUser={setLoggedUser} validateEmail={validateEmail} connectToChat={connectToChat.bind(this)}/>
         )
       }
+
       {
         loggedUser && (
           <Fragment>
-            <Menu setLoggedUser={setLoggedUser} chatClient={chatClient} setCurrentId={setCurrentId} currentId={currentId} setLastId={setLastId} lastId={lastId} newElement={newElement} setCodeArea={setCodeArea} codeArea={codeArea}/>
+            <Menu updateChat={updateChat} setLoggedUser={setLoggedUser} chatClient={chatClient} setCurrentId={setCurrentId} currentId={currentId} setLastId={setLastId} lastId={lastId} newElement={newElement} setCodeArea={setCodeArea} codeArea={codeArea}/>
             <div className={"page_container"}>
               <CodeArea setCurrentId={setCurrentId} currentId={currentId} setLastId={setLastId} lastId={lastId} updateRowNo={updateRowNo} codeArea={codeArea}/>
               {
                 chatViewStatus && (
-                  <ChatArea subscribe={subscribe} validateEmail={validateEmail} chat={chat} updateChat={updateChat} setChatViewStatus={setChatViewStatus} messagesEndRef={messagesEndRef} chatClient={chatClient} publish={publish}/>
+                  <ChatArea loggedUser={loggedUser} subscribe={subscribe} validateEmail={validateEmail} chat={chat} updateChat={updateChat} setChatViewStatus={setChatViewStatus} messagesEndRef={messagesEndRef} chatClient={chatClient} publish={publish}/>
                 )
               }
               {
@@ -165,6 +187,11 @@ function App() {
                 )
               }
             </div>
+            {
+              requestPayload && (
+                <RequestResponseModal loggedUser={loggedUser} requestPayload={requestPayload} setRequestPayload={setRequestPayload} publish={publish} setChatViewStatus={setChatViewStatus}/>
+              )
+            }
           </Fragment>
           )
         }

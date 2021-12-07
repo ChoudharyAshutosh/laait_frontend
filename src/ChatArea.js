@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faWindowClose, faUserPlus, faPaperPlane } from '@fortawesome/free-solid-svg-icons';
 import './ChatArea.css';
-export default function ChatArea({ subscribe, validateEmail, chat, updateChat, setChatViewStatus, messagesEndRef, chatClient, publish }){
+export default function ChatArea({ loggedUser, subscribe, validateEmail, chat, updateChat, setChatViewStatus, messagesEndRef, chatClient, publish }){
   const closeChat=()=>{
     setChatViewStatus(false);
     //document.querySelector('#chat_area').classList.toggle('hide');
@@ -39,13 +39,13 @@ export default function ChatArea({ subscribe, validateEmail, chat, updateChat, s
     if(!message) return;
     if(action==='send'){
       updateChat([...chat,{sender:'self',message:message}]);
-      publish('topic',message,0);
+      publish('laait_forum',JSON.stringify({sender:loggedUser,message:message}),0);
       console.log(action);
     }
     else if(action==='invite'){
       if(validateEmail(message)){
-        publish(message+'-request','Invitation for joining chat',0);
-        subscribe(message+'-response', 0);
+        publish(message+':request',JSON.stringify({sender:loggedUser,message:'Invitation for joining chat'}),0);
+        //subscribe(message+':response', 0);
         document.querySelector('#invitation_error').innerHTML="";
       }
       else{
@@ -53,7 +53,6 @@ export default function ChatArea({ subscribe, validateEmail, chat, updateChat, s
       }
       console.log(action);
     }
-    //console.log([...chat,{sender:'self',message:message}])
   }
   const triggerMessage=(event)=>{
     console.log(event.keyCode)
