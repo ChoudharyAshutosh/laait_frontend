@@ -32,7 +32,7 @@ function App() {
        updateChat([...chatHistory,JSON.parse(newMsgReceived)]);
      }
     }
-  },[newMsgReceived, chat, loggedUser]);
+  },[newMsgReceived/*, chat, loggedUser*/]);
 
   useEffect(()=>{
     setCodeArea([(
