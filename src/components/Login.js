@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { GoogleLogin } from 'react-google-login';
 import GoogleLogo from '../assests/google-icon.png'
 import './Login.css';
@@ -8,7 +8,7 @@ export default function Login({ setLoggedUser, validateEmail, connectToChat }){
     document.querySelector('#user_login').focus();
   },[]);*/
 
-  const login=(event)=>{
+  /*const login=(event)=>{
     if(event.charCode && event.charCode!==13)
       return;
     var id=document.querySelector('#user_login').value;
@@ -22,7 +22,7 @@ export default function Login({ setLoggedUser, validateEmail, connectToChat }){
       document.querySelector('#login_error').innerHTML='Please enter valid email.';
       document.querySelector('#user_login').focus();
     }
-  }
+  }*/
   const responseSuccessGoogle = (response) => {
   console.log(response.profileObj.email);
   setLoggedUser(response.profileObj.email);
@@ -37,7 +37,7 @@ export default function Login({ setLoggedUser, validateEmail, connectToChat }){
       <GoogleLogin
         render={renderProps => (
           <div className={'google-login'} onClick={renderProps.onClick} disabled={renderProps.disabled}>
-            <img className={'google-icon'} src={GoogleLogo} />
+            <img className={'google-icon'} src={GoogleLogo} alt={""}/>
             <div className={'login-text'}>Login with Google</div>
           </div>
         )}

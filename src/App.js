@@ -27,10 +27,12 @@ function App() {
   }, [chat]);
   useEffect(()=>{
     if(newMsgReceived){
-      if(JSON.parse(newMsgReceived).sender!==loggedUser)
-       updateChat([...chat,JSON.parse(newMsgReceived)]);
+      if(JSON.parse(newMsgReceived).sender!==loggedUser){
+        let chatHistory =chat;
+       updateChat([...chatHistory,JSON.parse(newMsgReceived)]);
+     }
     }
-  },[newMsgReceived]);
+  },[newMsgReceived, chat, loggedUser]);
 
   useEffect(()=>{
     setCodeArea([(
@@ -121,19 +123,19 @@ function App() {
        },
        rejectUnauthorized: false
      };
-     var chatClient=mqtt.connect(url, options)
-     if (chatClient) {
-       chatClient.on('connect', () => {
+     var chattingClient=mqtt.connect(url, options)
+     if (chattingClient) {
+       chattingClient.on('connect', () => {
          console.log('Connected');
        });
-       chatClient.on('error', (err) => {
+       chattingClient.on('error', (err) => {
          console.error('Connection error: ', err);
-         chatClient.end();
+         chattingClient.end();
        });
-       chatClient.on('reconnect', () => {
+       chattingClient.on('reconnect', () => {
          console.log('Reconnecting');
        });
-       chatClient.subscribe('laait_forum', 0, (error) => {
+       chattingClient.subscribe('laait_forum', 0, (error) => {
          if (error) {
            console.log('Subscribe to topics error', error)
            return;
@@ -141,25 +143,25 @@ function App() {
        });
        if(id){
          console.log(id)
-         chatClient.subscribe(id+':request', 0, (error) => {
+         chattingClient.subscribe(id+':request', 0, (error) => {
            if (error) {
              console.log('Subscribe to topics error', error)
              return;
            }
          });
-         chatClient.subscribe(id+':response', 0, (error) => {
+         chattingClient.subscribe(id+':response', 0, (error) => {
            if (error) {
              console.log('Subscribe to topics error', error)
              return;
            }
          });
       }
-       chatClient.on('message', (topic, message) => {
+       chattingClient.on('message', (topic, message) => {
          performAction(topic, message, id);
          //setNewMsgReceived(payload.message);
        });
      }
-     setChatClient(chatClient)
+     setChatClient(chattingClient)
      }
    }
   return (
