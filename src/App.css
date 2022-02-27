@@ -37,6 +37,8 @@ body{
     margin-left: 8%;
     margin-right: 2.7%;
     text-align: left;
+    background-color: #1a1a1a;
+    color: white;
 }
 .code-line-container{
     flex:1;
