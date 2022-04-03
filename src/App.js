@@ -101,6 +101,29 @@ function App() {
      document.getElementById('output_'+id).style.padding = '1%';
      document.getElementById('output_'+id).style.borderRadius = '5px';
      document.getElementById('output_'+id).innerHTML = code;
+     compileRemote(code);
+   }
+
+   const compileRemote=(code)=>{
+    const data = new FormData();
+    data.append('input',code);
+    console.log(data.getAll('input'))
+    const request = new Request("http://127.0.0.1:8000/notebook/output/", {
+        method: 'post',
+        mode:'no-cors',
+        body: data,
+    });
+    //request['body'] = data
+    console.log(request)
+    
+    fetch(request)
+    .then((result)=>{
+      console.log(result);
+      //return result.json()
+    })
+    /* .then((res)=>{
+      console.log(res);
+    }) */;
    }
 
    const createPDF=()=>{
