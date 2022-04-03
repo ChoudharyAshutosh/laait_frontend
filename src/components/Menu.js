@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { GoogleLogout } from 'react-google-login';
 import { faSave, faPlus, faCut, faCopy, faArrowUp, faArrowDown, faPlay, faStop, faRedoAlt, faForward } from '@fortawesome/free-solid-svg-icons'
 import RenameModal from './RenameModal'
 import './Menu.css'
-export default function Menu({ updateChat, setLoggedUser, chatClient, setCurrentId, currentId, setLastId, lastId, newElement, codeArea, setCodeArea }){
+export default function Menu({ updateChat, setLoggedUser, chatClient, setCurrentId, currentId, setLastId, lastId, newElement, codeArea, setCodeArea, createPDF, compileAllCode }){
     const logoutSuccessResponse=(response)=>{
       console.log(response);
       chatClient.end();
@@ -83,23 +83,13 @@ export default function Menu({ updateChat, setLoggedUser, chatClient, setCurrent
     return (
         <div className="menu-container">
             <div className="menus">
-                {/*<div className="menu-name">File</div>
-                <div className="menu-name">Edit</div>
-                <div className="menu-name">View</div>
-                <div className="menu-name">Insert</div>
-                <div className="menu-name">Cell</div>
-                <div className="menu-name">Kernel</div>
-                <div className="menu-name">Help</div>*/}
-                <div className="menu-bar-icons"><FontAwesomeIcon icon={faSave} color={'blue'}/></div>
+                <div className="menu-bar-icons" onClick={createPDF}><FontAwesomeIcon icon={faSave} color={'blue'}/></div>
                 <div className="menu-bar-icons" onClick={addNewCodeInputLine.bind(this,'add')}><FontAwesomeIcon icon={faPlus} color={'#996600'}/></div>
                 <div className="menu-bar-icons" onClick={addNewCodeInputLine.bind(this,'cut')}><FontAwesomeIcon icon={faCut} color={'red'}/></div>
                 <div className="menu-bar-icons" onClick={addNewCodeInputLine.bind(this,'copy')}><FontAwesomeIcon icon={faCopy} color={'purple'}/></div>
                 <div className="menu-bar-icons" onClick={addNewCodeInputLine.bind(this,'move_up')}><FontAwesomeIcon icon={faArrowUp}  color={'#666699'}/></div>
                 <div className="menu-bar-icons" onClick={addNewCodeInputLine.bind(this,'move_down')}><FontAwesomeIcon icon={faArrowDown}  color={'#666699'}/></div>
-                <div id="run_all" className="menu-bar-icons"><FontAwesomeIcon icon={faPlay} color={'green'}/> &nbsp;Run</div>
-                <div className="menu-bar-icons"><FontAwesomeIcon icon={faStop}  color={'#494950'}/></div>
-                <div className="menu-bar-icons"><FontAwesomeIcon icon={faRedoAlt}  color={'#6060eb'}/></div>
-                <div className="menu-bar-icons"><FontAwesomeIcon icon={faForward}  color={'#00ff80'}/></div>
+                <div id="run_all" className="menu-bar-icons" onClick={compileAllCode}><FontAwesomeIcon icon={faPlay} color={'green'}/> &nbsp;Run</div>
                 <div className="menu-name">
                     <div className="project-name" id="project-name" onClick={openRenameModal}>Enter name</div>
                     <GoogleLogout
@@ -113,26 +103,6 @@ export default function Menu({ updateChat, setLoggedUser, chatClient, setCurrent
 
                 </div>
             </div>
-            {/*<div className="tool-bar">
-                <div className="menu-bar-icons"><FontAwesomeIcon icon={faSave} /></div>
-                <div className="menu-bar-icons" onClick={addNewCodeInputLine.bind(this,'add')}><FontAwesomeIcon icon={faPlus} /></div>
-                <div className="menu-bar-icons" onClick={addNewCodeInputLine.bind(this,'cut')}><FontAwesomeIcon icon={faCut} /></div>
-                <div className="menu-bar-icons" onClick={addNewCodeInputLine.bind(this,'copy')}><FontAwesomeIcon icon={faCopy} /></div>
-                <div className="menu-bar-icons" onClick={addNewCodeInputLine.bind(this,'move_up')}><FontAwesomeIcon icon={faArrowUp} /></div>
-                <div className="menu-bar-icons" onClick={addNewCodeInputLine.bind(this,'move_down')}><FontAwesomeIcon icon={faArrowDown} /></div>
-                <div className="menu-bar-icons"><FontAwesomeIcon icon={faPlay} /> &nbsp;Run</div>
-                <div className="menu-bar-icons"><FontAwesomeIcon icon={faStop} /></div>
-                <div className="menu-bar-icons"><FontAwesomeIcon icon={faRedoAlt} /></div>
-                <div className="menu-bar-icons"><FontAwesomeIcon icon={faForward} /></div>
-                <div className="menu-bar-icons">
-                    <select className="selection-list">
-                        <option>Code</option>
-                        <option>Markdown</option>
-                        <option>Raw NBConvert</option>
-                        <option>Heading</option>
-                    </select>
-                </div>
-            </div>*/}
             <RenameModal/>
         </div>
     )

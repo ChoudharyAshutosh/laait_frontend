@@ -1,7 +1,7 @@
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faComments } from '@fortawesome/free-solid-svg-icons';
-import mqtt from 'mqtt';
+//import mqtt from 'mqtt';
 import './OpenChat.css';
 export default function OpenChat({ setChatViewStatus }){
   const showChat=()=>{

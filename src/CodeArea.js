@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 //import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 //import { faPlay } from '@fortawesome/free-solid-svg-icons'
 import './CodeArea.css';
@@ -13,7 +13,7 @@ export default function CodeArea({ setCurrentId, currentId, setLastId, lastId, u
     }*/
     return(
         <div className="codearea">
-            <div className="code-container">
+            <div className="code-container" id={"code_area"}>
                 {codeArea.map(code=>(code))}
             </div>
         </div>
