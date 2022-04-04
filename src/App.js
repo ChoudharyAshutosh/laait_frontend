@@ -1,5 +1,7 @@
 import React,{ useState, useEffect, useRef, Fragment } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import SyncLoader from "react-spinners/SyncLoader";
+import ReactDOM from 'react-dom';
 import { jsPDF } from "jspdf";
 import { faPlay } from '@fortawesome/free-solid-svg-icons';
 import mqtt from 'mqtt';
@@ -44,11 +46,19 @@ function App() {
                 <textarea id={'input_1'} onKeyDown={updateRowNo} onFocus={async()=>{await setCurrentId(1);/*console.log(1);*/}} className="code" rows={1} autoCorrect="off" autoCapitalize="none" spellCheck="false" tabIndex="0" wrap="off"></textarea>
             </div>
         </div>
-        <div id={'output_'+1} className="code-output"></div>
+        <div id={'output_'+1} className="code-output">
+          
+        </div>
       </div>
     )])
   },[]);
 
+  const Loader=()=>(
+    <div id={'loader_'+1} className="loader">
+      <SyncLoader color={"white"} loading={true} size={10} />
+    </div>
+  )
+  
   const validateEmail=(email)=>{
    var emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
    return emailPattern.test(email);
@@ -96,35 +106,35 @@ function App() {
      )
    }
 
-   const compileCode=(id)=>{
+   const compileCode=async(id)=>{
      let code = document.getElementById('input_'+id).value;
      document.getElementById('output_'+id).style.padding = '1%';
      document.getElementById('output_'+id).style.borderRadius = '5px';
-     document.getElementById('output_'+id).innerHTML = code;
-     compileRemote(code);
+     //document.getElementById('output_'+id).append(loader);
+     ReactDOM.render(<Loader/>,document.getElementById('output_'+id));
+     compileRemote(code,id);
    }
 
-   const compileRemote=(code)=>{
+   const compileRemote=(code,id)=>{
     const data = new FormData();
     data.append('input',code);
     console.log(data.getAll('input'))
-    const request = new Request("http://127.0.0.1:8000/notebook/output/", {
-        method: 'post',
-        mode:'no-cors',
-        body: data,
-    });
-    //request['body'] = data
-    console.log(request)
-    
-    fetch(request)
-    .then((result)=>{
-      console.log(result);
-      //return result.json()
-    })
-    /* .then((res)=>{
-      console.log(res);
-    }) */;
-   }
+
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', 
+            'http://127.0.0.1:8000/notebook/output/',
+            true);
+    xhr.setRequestHeader('X-Requested-With', 'CORS in Action');
+
+    xhr.onload = function () {
+        // do something to response
+        console.log(typeof this.responseText);
+        ReactDOM.unmountComponentAtNode(document.getElementById('output_'+id));
+        document.getElementById('output_'+id).innerHTML = JSON.parse(this.responseText).data.output;
+    };
+
+    xhr.send(data);
+  }
 
    const createPDF=()=>{
      const doc = new jsPDF();
