@@ -1,5 +1,7 @@
 import React,{ useState, useEffect, useRef, Fragment } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import SyncLoader from "react-spinners/SyncLoader";
+import ReactDOM from 'react-dom';
 import { jsPDF } from "jspdf";
 import { faPlay } from '@fortawesome/free-solid-svg-icons';
 import mqtt from 'mqtt';
@@ -41,14 +43,22 @@ function App() {
         <div className="code-input">
             <div className="play-icon"><FontAwesomeIcon icon={faPlay} color={'#FE9B00'} onClick={compileCode.bind(this, 1)}/></div>
             <div className="code-line-container">
-                <textarea id={'input_1'} onKeyDown={updateRowNo} onFocus={async()=>{await setCurrentId(1);/*console.log(1);*/}} className="code" rows={1} autoCorrect="off" autoCapitalize="none" spellCheck="false" tabIndex="0" wrap="off"></textarea>
+                <textarea id={'input_1'} onChange={(e)=>{updateRowNo(e,1)}} onFocus={async()=>{await setCurrentId(1);/*console.log(1);*/}} className="code" rows={1} autoCorrect="off" autoCapitalize="none" spellCheck="false" tabIndex="0" wrap="off"></textarea>
             </div>
         </div>
-        <div id={'output_'+1} className="code-output"></div>
+        <div id={'output_'+1} className="code-output">
+          
+        </div>
       </div>
     )])
   },[]);
 
+  const Loader=()=>(
+    <div id={'loader_'+1} className="loader">
+      <SyncLoader color={"white"} loading={true} size={10} />
+    </div>
+  )
+  
   const validateEmail=(email)=>{
    var emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
    return emailPattern.test(email);
@@ -74,21 +84,20 @@ function App() {
       });
     }
   }
-  const updateRowNo=(event)=>{
-    //   console.log(event.target.value.charCodeAt(event.target.value.length-1))
-    //   console.log(event.key,event.charCode,event.keyCode)
-       if((event.charCode===8 || event.keyCode===8) && event.target.value.charCodeAt(event.target.value.length-1)===10)
-           event.target.rows=event.target.rows-1;
-       else if(event.charCode===13 || event.keyCode===13)
-           event.target.rows=event.target.rows+1;
-   }
-   const newElement=(id,code="")=>{
-     return(
+  
+  const updateRowNo=(event,id)=>{
+    let code = document.querySelector('#input_'+id).value;
+    code = code.split('\n');
+    event.target.rows=code.length;
+  }
+  
+  const newElement=(id,code="")=>{
+    return(
       <div className="code-line" id={id} key={id}>
         <div className="code-input">
             <div className="play-icon"><FontAwesomeIcon icon={faPlay} color={'#FE9B00'} onClick={compileCode.bind(this, id)} /></div>
             <div className="code-line-container">
-                <textarea id={"input_"+id} defaultValue={code} onKeyDown={updateRowNo} onFocus={async()=>{await setCurrentId(id);/*console.log(id);*/}} className="code" rows={1} autoCorrect="off" autoCapitalize="none" spellCheck="false" tabIndex="0" wrap="off"></textarea>
+                <textarea id={"input_"+id} defaultValue={code} onChange={(e)=>{updateRowNo(e,id)}} onFocus={async()=>{await setCurrentId(id);/*console.log(id);*/}} className="code" rows={1} autoCorrect="off" autoCapitalize="none" spellCheck="false" tabIndex="0" wrap="off"></textarea>
             </div>
         </div>
         <div id={'output_'+id} className="code-output"></div>
@@ -96,35 +105,45 @@ function App() {
      )
    }
 
-   const compileCode=(id)=>{
+   const compileCode=async(id)=>{
      let code = document.getElementById('input_'+id).value;
      document.getElementById('output_'+id).style.padding = '1%';
      document.getElementById('output_'+id).style.borderRadius = '5px';
-     document.getElementById('output_'+id).innerHTML = code;
-     compileRemote(code);
+     //document.getElementById('output_'+id).append(loader);
+     ReactDOM.render(<Loader/>,document.getElementById('output_'+id));
+     compileRemote(code,id);
    }
 
-   const compileRemote=(code)=>{
+   const compileRemote=(code,id)=>{
     const data = new FormData();
     data.append('input',code);
-    console.log(data.getAll('input'))
-    const request = new Request("http://127.0.0.1:8000/notebook/output/", {
-        method: 'post',
-        mode:'no-cors',
-        body: data,
-    });
-    //request['body'] = data
-    console.log(request)
-    
-    fetch(request)
-    .then((result)=>{
-      console.log(result);
-      //return result.json()
-    })
-    /* .then((res)=>{
-      console.log(res);
-    }) */;
-   }
+    //console.log(data.getAll('input'))
+
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', 
+            'http://127.0.0.1:8000/notebook/output/',
+            true);
+    xhr.setRequestHeader('X-Requested-With', 'CORS in Action');
+
+    xhr.onload = function () {
+        //console.log(typeof this.responseText);
+        ReactDOM.unmountComponentAtNode(document.getElementById('output_'+id));
+        let output = JSON.parse(this.responseText).data.output;
+        output = output.split('\n');
+        //console.log(output)
+        let formattedOutput = '';
+        for(let i=0;i<output.length;i++){
+          formattedOutput += output[i];
+          if(i<(output.length+1) && output[i+1]!==''){
+            formattedOutput += ' <br/> ';
+          }
+          //console.log(formattedOutput)
+        }
+        document.getElementById('output_'+id).innerHTML = formattedOutput;
+    };
+
+    xhr.send(data);
+  }
 
    const createPDF=()=>{
      const doc = new jsPDF();
@@ -160,7 +179,7 @@ function App() {
      }
   }
 
-   const connectToChat=(id)=>{
+  const connectToChat=(id)=>{
      if(!chatClient){
      const url = `ws://broker.emqx.io:8083/mqtt`;
      const options = {
@@ -233,7 +252,7 @@ function App() {
           <Fragment>
             <Menu updateChat={updateChat} setLoggedUser={setLoggedUser} chatClient={chatClient} setCurrentId={setCurrentId} currentId={currentId} setLastId={setLastId} lastId={lastId} newElement={newElement} setCodeArea={setCodeArea} codeArea={codeArea} createPDF={createPDF} compileAllCode={compileAllCode}/>
             <div className={"page_container"}>
-              <CodeArea setCurrentId={setCurrentId} currentId={currentId} setLastId={setLastId} lastId={lastId} updateRowNo={updateRowNo} codeArea={codeArea}/>
+              <CodeArea codeArea={codeArea}/>
               {
                 chatViewStatus && (
                   <ChatArea loggedUser={loggedUser} subscribe={subscribe} validateEmail={validateEmail} chat={chat} updateChat={updateChat} setChatViewStatus={setChatViewStatus} messagesEndRef={messagesEndRef} chatClient={chatClient} publish={publish}/>

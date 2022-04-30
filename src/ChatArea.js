@@ -67,16 +67,6 @@ export default function ChatArea({ loggedUser, subscribe, validateEmail, chat, u
         </div>
         <div className="chat">
           <div className="chat_messages" id="chat_messages">
-            <div className="incoming_message_container">
-              <div className="incoming_message">
-                <div>message 1</div>
-                <div className="incoming_time">cvcvxvxvvvxvxv {(new Date()).getHours()+":"+(new Date()).getMinutes()}</div>
-              </div>
-            </div>
-            <div className="outgoing_message">
-              <div>message 1</div>
-              <div className="outgoing_time">{(new Date()).getHours()+":"+(new Date()).getMinutes()}</div>
-            </div>
             {displayChat()}
             <div ref={messagesEndRef} />
           </div>

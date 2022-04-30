@@ -2,7 +2,7 @@ import React from "react";
 //import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 //import { faPlay } from '@fortawesome/free-solid-svg-icons'
 import './CodeArea.css';
-export default function CodeArea({ setCurrentId, currentId, setLastId, lastId, updateRowNo, codeArea }){
+export default function CodeArea({ codeArea }){
     /*const updateRowNo=(event)=>{
      //   console.log(event.target.value.charCodeAt(event.target.value.length-1))
      //   console.log(event.key,event.charCode,event.keyCode)
