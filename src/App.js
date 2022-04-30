@@ -179,7 +179,7 @@ function App() {
      }
   }
 
-   const connectToChat=(id)=>{
+  const connectToChat=(id)=>{
      if(!chatClient){
      const url = `ws://broker.emqx.io:8083/mqtt`;
      const options = {
