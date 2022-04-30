@@ -118,7 +118,7 @@ function App() {
    const compileRemote=(code,id)=>{
     const data = new FormData();
     data.append('input',code);
-    console.log(data.getAll('input'))
+    //console.log(data.getAll('input'))
 
     var xhr = new XMLHttpRequest();
     xhr.open('POST', 
@@ -127,10 +127,20 @@ function App() {
     xhr.setRequestHeader('X-Requested-With', 'CORS in Action');
 
     xhr.onload = function () {
-        // do something to response
-        console.log(typeof this.responseText);
+        //console.log(typeof this.responseText);
         ReactDOM.unmountComponentAtNode(document.getElementById('output_'+id));
-        document.getElementById('output_'+id).innerHTML = JSON.parse(this.responseText).data.output;
+        let output = JSON.parse(this.responseText).data.output;
+        output = output.split('\n');
+        //console.log(output)
+        let formattedOutput = '';
+        for(let i=0;i<output.length;i++){
+          formattedOutput += output[i];
+          if(i<(output.length+1) && output[i+1]!==''){
+            formattedOutput += ' <br/> ';
+          }
+          //console.log(formattedOutput)
+        }
+        document.getElementById('output_'+id).innerHTML = formattedOutput;
     };
 
     xhr.send(data);
