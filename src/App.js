@@ -43,7 +43,7 @@ function App() {
         <div className="code-input">
             <div className="play-icon"><FontAwesomeIcon icon={faPlay} color={'#FE9B00'} onClick={compileCode.bind(this, 1)}/></div>
             <div className="code-line-container">
-                <textarea id={'input_1'} onKeyDown={updateRowNo} onFocus={async()=>{await setCurrentId(1);/*console.log(1);*/}} className="code" rows={1} autoCorrect="off" autoCapitalize="none" spellCheck="false" tabIndex="0" wrap="off"></textarea>
+                <textarea id={'input_1'} onChange={(e)=>{updateRowNo(e,1)}} onFocus={async()=>{await setCurrentId(1);/*console.log(1);*/}} className="code" rows={1} autoCorrect="off" autoCapitalize="none" spellCheck="false" tabIndex="0" wrap="off"></textarea>
             </div>
         </div>
         <div id={'output_'+1} className="code-output">
@@ -84,13 +84,16 @@ function App() {
       });
     }
   }
-  const updateRowNo=(event)=>{
+  const updateRowNo=(event,id)=>{
     //   console.log(event.target.value.charCodeAt(event.target.value.length-1))
     //   console.log(event.key,event.charCode,event.keyCode)
-       if((event.charCode===8 || event.keyCode===8) && event.target.value.charCodeAt(event.target.value.length-1)===10)
+    let code = document.querySelector('#input_'+id).value;
+    code = code.split('\n');
+    event.target.rows=code.length;
+    /* if((event.charCode===8 || event.keyCode===8) && event.target.value.charCodeAt(event.target.value.length-1)===10)
            event.target.rows=event.target.rows-1;
        else if(event.charCode===13 || event.keyCode===13)
-           event.target.rows=event.target.rows+1;
+           event.target.rows=code.length; */
    }
    const newElement=(id,code="")=>{
      return(
@@ -98,7 +101,7 @@ function App() {
         <div className="code-input">
             <div className="play-icon"><FontAwesomeIcon icon={faPlay} color={'#FE9B00'} onClick={compileCode.bind(this, id)} /></div>
             <div className="code-line-container">
-                <textarea id={"input_"+id} defaultValue={code} onKeyDown={updateRowNo} onFocus={async()=>{await setCurrentId(id);/*console.log(id);*/}} className="code" rows={1} autoCorrect="off" autoCapitalize="none" spellCheck="false" tabIndex="0" wrap="off"></textarea>
+                <textarea id={"input_"+id} defaultValue={code} onChange={(e)=>{updateRowNo(e,id)}} onFocus={async()=>{await setCurrentId(id);/*console.log(id);*/}} className="code" rows={1} autoCorrect="off" autoCapitalize="none" spellCheck="false" tabIndex="0" wrap="off"></textarea>
             </div>
         </div>
         <div id={'output_'+id} className="code-output"></div>
