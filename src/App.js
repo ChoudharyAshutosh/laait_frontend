@@ -84,19 +84,15 @@ function App() {
       });
     }
   }
+  
   const updateRowNo=(event,id)=>{
-    //   console.log(event.target.value.charCodeAt(event.target.value.length-1))
-    //   console.log(event.key,event.charCode,event.keyCode)
     let code = document.querySelector('#input_'+id).value;
     code = code.split('\n');
     event.target.rows=code.length;
-    /* if((event.charCode===8 || event.keyCode===8) && event.target.value.charCodeAt(event.target.value.length-1)===10)
-           event.target.rows=event.target.rows-1;
-       else if(event.charCode===13 || event.keyCode===13)
-           event.target.rows=code.length; */
-   }
-   const newElement=(id,code="")=>{
-     return(
+  }
+  
+  const newElement=(id,code="")=>{
+    return(
       <div className="code-line" id={id} key={id}>
         <div className="code-input">
             <div className="play-icon"><FontAwesomeIcon icon={faPlay} color={'#FE9B00'} onClick={compileCode.bind(this, id)} /></div>
@@ -256,7 +252,7 @@ function App() {
           <Fragment>
             <Menu updateChat={updateChat} setLoggedUser={setLoggedUser} chatClient={chatClient} setCurrentId={setCurrentId} currentId={currentId} setLastId={setLastId} lastId={lastId} newElement={newElement} setCodeArea={setCodeArea} codeArea={codeArea} createPDF={createPDF} compileAllCode={compileAllCode}/>
             <div className={"page_container"}>
-              <CodeArea setCurrentId={setCurrentId} currentId={currentId} setLastId={setLastId} lastId={lastId} updateRowNo={updateRowNo} codeArea={codeArea}/>
+              <CodeArea codeArea={codeArea}/>
               {
                 chatViewStatus && (
                   <ChatArea loggedUser={loggedUser} subscribe={subscribe} validateEmail={validateEmail} chat={chat} updateChat={updateChat} setChatViewStatus={setChatViewStatus} messagesEndRef={messagesEndRef} chatClient={chatClient} publish={publish}/>
