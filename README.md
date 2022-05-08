@@ -5,7 +5,7 @@ React based code editor
 #### Supports multiple code editor
 <e> Notebook provides multiples input sections for compiling more than one section of code independently. </e>
 <e> IT provides a menu bar with following functionalities : </e>
-<e>     Code saving in txt file. </e>
+<e> --- Code saving in txt file. </e>
 <e>     Adding new code editor. </e>
 <e>     Deleting code editor. </e>
 <e>     Copying code from one editor to new editor. </e>
