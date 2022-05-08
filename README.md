@@ -11,3 +11,7 @@ React based code editor
 <li>Copying code from one editor to new editor. </li>
 <li>Jumping from one code editor upper code editor and lower code editor. </li>
 <li>Link to Laait documentation </li>
+
+
+#### Supports code saving in file name provided by user
+<e> Notebook provides an input section for letting user mention file name in which code will be saved. </e>
