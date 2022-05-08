@@ -21,3 +21,6 @@ React based code editor
 
 #### Supports live form
 <e> Notebook provides live forum for having discussion with other live users. </e>
+
+#### Sending and responding to forum joining request 
+<e> Notebook enables users to invite other live users to join form by sendgin joining request on using their google ids. </e>
