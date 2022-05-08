@@ -27,3 +27,6 @@ React based code editor
 
 ## <i> Images of Laait notebook </i>
 ![Screenshot from 2022-05-08 15-03-47 (1)](https://user-images.githubusercontent.com/55288012/167291612-2efd7720-a5b5-4384-b3e5-cc08cc327a9e.png)
+
+
+![Screenshot from 2022-05-08 15-44-23 (1)](https://user-images.githubusercontent.com/55288012/167291674-5eda0e62-ce5a-4923-ab2e-09245353e0fb.png)
