@@ -2,7 +2,6 @@ import React,{ useState, useEffect, useRef, Fragment } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import SyncLoader from "react-spinners/SyncLoader";
 import ReactDOM from 'react-dom';
-import { jsPDF } from "jspdf";
 import { faPlay } from '@fortawesome/free-solid-svg-icons';
 import mqtt from 'mqtt';
 import Menu from './components/Menu';
@@ -24,6 +23,7 @@ function App() {
   const [newMsgReceived, setNewMsgReceived]=useState(null);
   const messagesEndRef = useRef(null);
   const [requestPayload, setRequestPayload] = useState(null);
+
   useEffect(()=>{
     if(messagesEndRef.current)
       messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
@@ -107,11 +107,17 @@ function App() {
 
    const compileCode=async(id)=>{
      let code = document.getElementById('input_'+id).value;
-     document.getElementById('output_'+id).style.padding = '1%';
-     document.getElementById('output_'+id).style.borderRadius = '5px';
-     //document.getElementById('output_'+id).append(loader);
-     ReactDOM.render(<Loader/>,document.getElementById('output_'+id));
-     compileRemote(code,id);
+     if(code !== ''){
+      document.getElementById('output_'+id).style.padding = '1%';
+      document.getElementById('output_'+id).style.borderRadius = '5px';
+      //document.getElementById('output_'+id).append(loader);
+      ReactDOM.render(<Loader/>,document.getElementById('output_'+id));
+      compileRemote(code,id);
+    }
+    else{
+      document.getElementById('output_'+id).innerHTML = '';
+      document.getElementById('output_'+id).style.padding = '0%';
+    }
    }
 
    const compileRemote=(code,id)=>{
@@ -145,30 +151,28 @@ function App() {
     xhr.send(data);
   }
 
-   const createPDF=()=>{
-     const doc = new jsPDF();
-     let name = document.getElementById('project-name').innerHTML;
-     let codeData = document.getElementById('code_area').childNodes;
-     let text='';
-     codeData.forEach((codeBox, i) => {
-        text+='  Code : \n\n';
-        text+=document.getElementById('input_'+codeBox.id).value+' \n\n\n';
-        text+='  Output : \n\n';
-        text+=document.getElementById('output_'+codeBox.id).innerHTML+' \n\n';
-        text+='\n\n';
-     });
-     doc.text(text, 10, 10);
-     doc.save(name+".pdf");
-   }
-
-   const compileAllCode=()=>{
-     let codeData = document.getElementById('code_area').childNodes;
-     codeData.forEach(async(codeBox, i) => {
-        await compileCode(codeBox.id);
+  const createTxt=()=>{
+    let name = document.getElementById('project-name').innerHTML;
+    let codeData = document.getElementById('code_area').childNodes;
+    let text='';
+    codeData.forEach((codeBox, i) => {
+      text+='Code'+(i+1)+' :: \n';
+      text+=document.getElementById('input_'+codeBox.id).value+' \n\n';
+      text+='Output'+(i+1)+' :: \n';
+      text+=document.getElementById('output_'+codeBox.id).innerHTML+' \n\n';
+      //text+='\n';
     });
-   }
-
-   const performAction=(topic,message,id)=>{
+    text = text.split('<br>');
+    text = text.join(' \n ');
+    const element = document.createElement("a");
+    const file = new Blob([text], {type: 'text/plain'});
+    element.href = URL.createObjectURL(file);
+    element.download = name+".txt";
+    document.body.appendChild(element); // Required for this to work in FireFox
+    element.click()
+  }
+  
+  const performAction=(topic,message,id)=>{
      if(topic.split(':').length===1){
        if(JSON.parse(message).sender!==id)
         setNewMsgReceived(message);
@@ -239,6 +243,11 @@ function App() {
      setChatClient(chattingClient)
      }
    }
+
+  const openDocumentation = ()=>{
+    window.open("https://github.com/Rahulbeniwal26119/laait/blob/master/README.md", "_blank");
+  }
+
   return (
     <div className="App">
       {
@@ -250,7 +259,7 @@ function App() {
       {
         loggedUser && (
           <Fragment>
-            <Menu updateChat={updateChat} setLoggedUser={setLoggedUser} chatClient={chatClient} setCurrentId={setCurrentId} currentId={currentId} setLastId={setLastId} lastId={lastId} newElement={newElement} setCodeArea={setCodeArea} codeArea={codeArea} createPDF={createPDF} compileAllCode={compileAllCode}/>
+            <Menu updateChat={updateChat} setLoggedUser={setLoggedUser} chatClient={chatClient} setCurrentId={setCurrentId} currentId={currentId} setLastId={setLastId} lastId={lastId} newElement={newElement} setCodeArea={setCodeArea} codeArea={codeArea} createTxt={createTxt} openDocumentation={openDocumentation}/>
             <div className={"page_container"}>
               <CodeArea codeArea={codeArea}/>
               {
