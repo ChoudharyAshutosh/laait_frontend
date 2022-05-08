@@ -18,3 +18,6 @@ React based code editor
 
 #### Supports code saving in file name provided by user
 <e> Notebook provides an input section for letting user mention file name in which code will be saved. </e>
+
+#### Supports live form
+<e> Notebook provides live forum for having discussion with other live users. </e>
