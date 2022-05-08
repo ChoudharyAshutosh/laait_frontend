@@ -3,7 +3,7 @@ React based code editor
 
 ## <i> Functionalities of Laait notebook </i>
 
-#### <li> Supports only google login <li>
+#### <li> Supports only google login </li>
 <e> User has to login with google for using for using notebook. </e>
 
 #### Supports multiple code editor
