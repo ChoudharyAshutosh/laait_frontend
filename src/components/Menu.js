@@ -66,7 +66,7 @@ export default function Menu({ updateChat, setLoggedUser, chatClient, setCurrent
     }
     const openRenameModal=()=>{
         var projectName=document.getElementById('project-name').innerHTML;
-        document.getElementById('rename').value=projectName;
+        document.getElementById('rename').value=projectName==='Enter name'?'':projectName;
         document.getElementById('rename_error_message').innerHTML='';
         document.getElementById('modal').style.display='flex';
         document.getElementById('rename').focus();

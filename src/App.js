@@ -153,6 +153,10 @@ function App() {
 
   const createTxt=()=>{
     let name = document.getElementById('project-name').innerHTML;
+    if(name === '' || name === 'Enter name'){
+      alert('Please enter file name.');
+      return;
+    }
     let codeData = document.getElementById('code_area').childNodes;
     let text='';
     codeData.forEach((codeBox, i) => {

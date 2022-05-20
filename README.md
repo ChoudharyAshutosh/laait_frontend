@@ -1,70 +1,36 @@
-# Getting Started with Create React App
+# Laait notebook
+React based code editor
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## <i> Functionalities of Laait notebook </i>
 
-## Available Scripts
+#### Supports only google login 
+<e> User has to login with google for using for using notebook and user can logout after using notebook. </e>
 
-In the project directory, you can run:
+#### Supports multiple code editor
+<e> Notebook provides multiples input sections for compiling more than one section of code independently. </e>
+<e> IT provides a menu bar with following functionalities : </e>
+<li>Code saving in text file. </li>
+<li>Adding new code editor. </li>
+<li>Deleting code editor. </li>
+<li>Copying code from one editor to new editor. </li>
+<li>Jumping from one code editor upper code editor and lower code editor. </li>
+<li>Link to Laait documentation </li>
 
-### `npm start`
+#### Supports code saving in file name provided by user
+<e> Notebook provides an input section for letting user mention file name in which code will be saved. </e>
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+#### Supports live form
+<e> Notebook provides live forum for having discussion with other live users. </e>
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+#### Sending and responding to forum joining request 
+<e> Notebook enables users to invite other live users to join form by sendgin joining request on using their google ids. </e>
 
-### `npm test`
+## <i> Images of Laait notebook </i>
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+![Screenshot from 2022-05-08 15-46-43 (1)](https://user-images.githubusercontent.com/55288012/167291726-edeba89e-fbb3-477e-8d00-1c973cbc577e.png)
 
-### `npm run build`
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+![Screenshot from 2022-05-08 15-03-47 (1)](https://user-images.githubusercontent.com/55288012/167291612-2efd7720-a5b5-4384-b3e5-cc08cc327a9e.png)
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+![Screenshot from 2022-05-08 15-44-23 (1)](https://user-images.githubusercontent.com/55288012/167291674-5eda0e62-ce5a-4923-ab2e-09245353e0fb.png)
